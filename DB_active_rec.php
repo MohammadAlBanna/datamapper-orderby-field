@@ -810,14 +810,15 @@ class CI_DB_active_record extends CI_DB_driver {
 
 	// --------------------------------------------------------------------
 
-	/**
+	/** This function has been edited by: Mohammad AlBanna
+	 * Web Address: www.mbanna.info
 	 * Sets the ORDER BY value
 	 *
 	 * @param	string
 	 * @param	string	direction: asc or desc
 	 * @return	object
 	 */
-	public function order_by($orderby, $direction = '')
+	public function order_by($orderby, $direction = '',$byField = false)
 	{
 		if (strtolower($direction) == 'random')
 		{
@@ -827,6 +828,9 @@ class CI_DB_active_record extends CI_DB_driver {
 		elseif (trim($direction) != '')
 		{
 			$direction = (in_array(strtoupper(trim($direction)), array('ASC', 'DESC'), TRUE)) ? ' '.$direction : ' ASC';
+		}
+		else if(is_array($direction) && $byField){
+			$direction = "FIELD(".$orderby.",'".implode("' , '",$direction)."')";
 		}
 
 
@@ -851,8 +855,16 @@ class CI_DB_active_record extends CI_DB_driver {
 			$orderby = $this->_protect_identifiers($orderby);
 		}
 
-		$orderby_statement = $orderby.$direction;
+		if($byField){
+			$orderby_statement = $direction;
 
+		}
+		else{
+			$orderby_statement = $orderby.$direction;
+		}
+
+		// var_dump($orderby_statement);
+		// exit;
 		$this->ar_orderby[] = $orderby_statement;
 		if ($this->ar_caching === TRUE)
 		{
@@ -1923,7 +1935,7 @@ class CI_DB_active_record extends CI_DB_driver {
 			'ar_cache_set'			=> array(),
 			'ar_cache_exists'		=> array(),
 			'ar_cache_no_escape'	=> array()
-		));
+			));
 	}
 
 	// --------------------------------------------------------------------
@@ -2010,7 +2022,7 @@ class CI_DB_active_record extends CI_DB_driver {
 			'ar_limit'			=> FALSE,
 			'ar_offset'			=> FALSE,
 			'ar_order'			=> FALSE,
-		);
+			);
 
 		$this->_reset_run($ar_reset_items);
 	}
@@ -2035,7 +2047,7 @@ class CI_DB_active_record extends CI_DB_driver {
 			'ar_keys'		=> array(),
 			'ar_limit'		=> FALSE,
 			'ar_order'		=> FALSE
-		);
+			);
 
 		$this->_reset_run($ar_reset_items);
 	}
