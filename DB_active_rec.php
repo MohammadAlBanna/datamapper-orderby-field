@@ -819,8 +819,12 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @return	object
 	 */
 	public function order_by($orderby, $direction = '',$byField = false)
-	{
-		if (strtolower($direction) == 'random')
+	{	
+		if(is_array($direction) && $byField){
+			$direction = "FIELD(".$orderby.",'".implode("' , '",$direction)."')";
+		}
+
+		else if (strtolower($direction) == 'random')
 		{
 			$orderby = ''; // Random results want or don't need a field name
 			$direction = $this->_random_keyword;
@@ -829,9 +833,7 @@ class CI_DB_active_record extends CI_DB_driver {
 		{
 			$direction = (in_array(strtoupper(trim($direction)), array('ASC', 'DESC'), TRUE)) ? ' '.$direction : ' ASC';
 		}
-		else if(is_array($direction) && $byField){
-			$direction = "FIELD(".$orderby.",'".implode("' , '",$direction)."')";
-		}
+		
 
 
 		if (strpos($orderby, ',') !== FALSE)
