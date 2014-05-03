@@ -29,8 +29,10 @@ Edit function order_by:
 	 * @return	object
 	 */
 	public function order_by($orderby, $direction = '',$byField = false)
-	{
-		if (strtolower($direction) == 'random')
+	{	if(is_array($direction) && $byField){
+			$direction = "FIELD(".$orderby.",'".implode("' , '",$direction)."')";
+		}
+		elseif (strtolower($direction) == 'random')
 		{
 			$orderby = ''; // Random results want or don't need a field name
 			$direction = $this->_random_keyword;
@@ -39,10 +41,6 @@ Edit function order_by:
 		{
 			$direction = (in_array(strtoupper(trim($direction)), array('ASC', 'DESC'), TRUE)) ? ' '.$direction : ' ASC';
 		}
-		else if(is_array($direction) && $byField){
-			$direction = "FIELD(".$orderby.",'".implode("' , '",$direction)."')";
-		}
-
 
 		if (strpos($orderby, ',') !== FALSE)
 		{

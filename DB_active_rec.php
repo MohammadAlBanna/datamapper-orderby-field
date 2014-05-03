@@ -865,8 +865,6 @@ class CI_DB_active_record extends CI_DB_driver {
 			$orderby_statement = $orderby.$direction;
 		}
 
-		// var_dump($orderby_statement);
-		// exit;
 		$this->ar_orderby[] = $orderby_statement;
 		if ($this->ar_caching === TRUE)
 		{
